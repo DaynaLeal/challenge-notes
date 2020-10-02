@@ -4,14 +4,17 @@ import { v4 as uuid } from 'uuid'
 
 import client from 'client'
 
-import { Song } from 'interfaces/songs'
-
+// import { Song } from 'interfaces/songs'
+// import sortData from '../components/SortSongs'
 import styles from './styles/song-table.module.sass'
 
 const SongTable = ({ routeProps }: Props) => {
   console.log('route props', routeProps)
   const [songs, setSongs] = useState<Song[]>([])
   const [isLoading, setIsLoading] = useState(true)
+
+  const [sortedProperty, setSortedProperty] = useState('artist')
+
   useEffect(() => {
     /**
      * inside of useEffect functions that need to use async / await syntax, you have to declare
@@ -33,7 +36,25 @@ const SongTable = ({ routeProps }: Props) => {
       }
     }
     fetchSongs()
-  }, [])
+
+    const sortData = (property: string) => {
+      let sortedSongs = [...songs]
+      // const properties: {[key: string]: string} = {
+      //   title: 'title',
+      //   artist: 'artist',
+      //   album: 'album',
+      //   genre: 'genre',
+      //   year: 'year'
+      // }
+      // const sortProperty = properties[property]
+      sortedSongs.sort((a, b) => b[property] - a[property])
+      console.log(sortedSongs)
+      setSongs(sortedSongs)
+    }
+
+    sortData(sortedProperty)
+    // eslint-disable-next-line
+  }, [sortedProperty])
   // if isLoading is true, it will only return the h1 that says loading
   return isLoading ? (
     <h1>Loading..</h1>
@@ -43,10 +64,10 @@ const SongTable = ({ routeProps }: Props) => {
       <table className={styles.table}>
         <thead>
           <tr>
-            <th>Title</th>
-            <th>Artist</th>
-            <th>Album</th>
-            <th>Genre</th>
+            <th onClick={() => setSortedProperty('title')}>Title</th>
+            <th onClick={() => setSortedProperty('artist')}>Artist</th>
+            <th onClick={() => setSortedProperty('album')}>Album</th>
+            <th onClick={() => setSortedProperty('genre')}>Genre</th>
           </tr>
         </thead>
         <tbody>
@@ -77,6 +98,15 @@ interface Props {
 // but when it's your own, it's safe to do so
 interface SongApiResponse {
   data: Song[]
+}
+
+interface Song {
+  [key: string]: any
+  artist: string
+  title: string
+  genre: 'pop' | 'rock' | 'rap'
+  album: string
+  year: number
 }
 
 export default SongTable

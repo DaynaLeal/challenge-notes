@@ -3,7 +3,7 @@ import { Switch, Route, Redirect, RouteProps } from 'react-router-dom'
 
 import Header from 'components/header/Header'
 
-/**
+/*
  * These components are lazy loaded and code split
  * Meaning that they are actually completely separate files after the bundler
  * does it's thing. This is fairly advanced, so don't worry about the specifics.
