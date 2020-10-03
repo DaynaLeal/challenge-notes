@@ -13,7 +13,7 @@ const SongTable = ({ routeProps }: Props) => {
   const [songs, setSongs] = useState<Song[]>([])
   const [isLoading, setIsLoading] = useState(true)
 
-  const [sortedProperty, setSortedProperty] = useState('artist')
+  // const [sortedProperty, setSortedProperty] = useState('artist')
 
   useEffect(() => {
     /**
@@ -37,24 +37,20 @@ const SongTable = ({ routeProps }: Props) => {
     }
     fetchSongs()
 
-    const sortData = (property: string) => {
-      let sortedSongs = [...songs]
-      // const properties: {[key: string]: string} = {
-      //   title: 'title',
-      //   artist: 'artist',
-      //   album: 'album',
-      //   genre: 'genre',
-      //   year: 'year'
-      // }
-      // const sortProperty = properties[property]
-      sortedSongs.sort((a, b) => b[property] - a[property])
-      console.log(sortedSongs)
-      setSongs(sortedSongs)
-    }
+  }, [])
 
-    sortData(sortedProperty)
-    // eslint-disable-next-line
-  }, [sortedProperty])
+  type SortKey = 'title' | 'artist' | 'album' | 'genre' | 'year'
+  const sortData = (property: SortKey) => {
+    let sortedSongs = [...songs]
+  
+    sortedSongs.sort((a, b) => {
+      if(a[property] < b[property]) { return -1 }
+      if(a[property] > b[property]) { return 1 }
+      return 0;
+    }
+    setSongs(sortedSongs)
+  }
+  
   // if isLoading is true, it will only return the h1 that says loading
   return isLoading ? (
     <h1>Loading..</h1>
@@ -64,10 +60,10 @@ const SongTable = ({ routeProps }: Props) => {
       <table className={styles.table}>
         <thead>
           <tr>
-            <th onClick={() => setSortedProperty('title')}>Title</th>
-            <th onClick={() => setSortedProperty('artist')}>Artist</th>
-            <th onClick={() => setSortedProperty('album')}>Album</th>
-            <th onClick={() => setSortedProperty('genre')}>Genre</th>
+            <th onClick={() => sortData('title')}>Title</th>
+            <th onClick={() => sortData('artist')}>Artist</th>
+            <th onClick={() => sortData('album')}>Album</th>
+            <th onClick={() => sortData('genre')}>Genre</th>
           </tr>
         </thead>
         <tbody>
